@@ -11,3 +11,5 @@ test-coverage:
 		poetry run pytest --cov-report xml --cov=page_analyzer
 lint:
 		poetry run flake8 page_analyzer
+build:
+		./build_sh
