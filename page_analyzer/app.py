@@ -62,7 +62,15 @@ def urls_post():
 @app.get('/urls/<id>')
 def url(id):
     url = db.get_url_by_id(id)
+    checks = db.get_url_checks(id)
     return render_template(
         'urls/show.html',
-        url=url
+        url=url,
+        checks=checks
     )
+
+
+@app.post('/urls/<id>/checks')
+def url_checks(id):
+    db.insert_new_check(id)
+    return redirect(url_for('url', id=id))
