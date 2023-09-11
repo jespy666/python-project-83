@@ -40,11 +40,8 @@ def insert_new_url(url: str) -> tuple | int:
             existing_id = cursor.fetchone()
             if existing_id:
                 return existing_id[0], True
-            insert_query = '''
-            INSERT INTO urls
-            (name, created_at) VALUES (%s, %s) 
-            RETURNING id
-            '''
+            insert_query = '''INSERT INTO urls (name, created_at)
+             VALUES (%s, %s) RETURNING id'''
             cursor.execute(insert_query, (url, date.today().isoformat()))
             return cursor.fetchone()[0]
 
