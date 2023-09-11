@@ -6,11 +6,12 @@ import os
 def connect():
     try:
         env_variable = os.getenv('DATABASE_URL')
+        print(env_variable)
         connection = psycopg2.connect(env_variable)
         connection.autocommit = True
         return connection
     except Exception as e:
-        print(f'Error connecting to database{e}')
+        print(f'Error connecting to database: {e}')
         return None
 
 
