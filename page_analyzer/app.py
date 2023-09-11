@@ -14,7 +14,8 @@ from dotenv import load_dotenv
 import os
 
 
-load_dotenv()
+if "SECRET_KEY" not in os.environ:
+    load_dotenv()
 
 ROOT = f'{os.path.dirname(__file__)}/..'
 db.execute_sql_script(f'{ROOT}/database.sql')

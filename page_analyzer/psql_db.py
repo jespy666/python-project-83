@@ -1,12 +1,10 @@
 import psycopg2
 from datetime import date
 import os
-from dotenv import load_dotenv
 
 
 def connect():
     try:
-        load_dotenv()
         env_variable = os.getenv('DATABASE_URL')
         connection = psycopg2.connect(env_variable)
         connection.autocommit = True
