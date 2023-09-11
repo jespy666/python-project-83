@@ -12,4 +12,4 @@ test-coverage:
 lint:
 		poetry run flake8 page_analyzer
 build:
-		./build_sh
+		./build.sh
