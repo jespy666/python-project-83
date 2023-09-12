@@ -8,7 +8,7 @@ from flask import (
     get_flashed_messages
 )
 from validators import url as valid
-from page_analyzer.parser import normalize_url
+from page_analyzer.parser import normalize_url, get_html_from_url, get_seo_info
 from page_analyzer import psql_db as db
 from dotenv import load_dotenv
 import os
@@ -80,7 +80,9 @@ def url_checks(id):
     try:
         response = requests.get(url_name)
         response.raise_for_status()
-        db.insert_new_check(id, response.status_code)
+        text = get_html_from_url(url_name)
+        seo_info = get_seo_info(text)
+        db.insert_new_check(id, response.status_code, seo_info)
         flash('Страница успешно проверена', 'success')
     except (
         requests.RequestException, requests.Timeout,

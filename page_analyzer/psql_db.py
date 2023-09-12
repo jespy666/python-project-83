@@ -65,10 +65,11 @@ def get_url_by_id(id_):
             return None
 
 
-def insert_new_check(url_id: int, status_code: int):
+def insert_new_check(url_id: int, status_code: int, seo_info: dict):
     insert_query = '''
-    INSERT INTO url_checks (url_id, status_code, created_at) 
-    VALUES (%s, %s, %s);
+    INSERT INTO url_checks
+    (url_id, status_code, h1, title, description, created_at) 
+    VALUES (%s, %s, %s, %s, %s, %s);
     '''
     with connect() as connection:
         with connection.cursor() as cursor:
@@ -77,6 +78,9 @@ def insert_new_check(url_id: int, status_code: int):
                 (
                     url_id,
                     status_code,
+                    seo_info.get('h1'),
+                    seo_info.get('title'),
+                    seo_info.get('description'),
                     date.today().isoformat()
                 )
             )
