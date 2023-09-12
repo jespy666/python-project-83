@@ -26,10 +26,11 @@ def get_urls_from_db():
     with connect() as connection:
         with connection.cursor() as cursor:
             query = """
-                SELECT urls.id, urls.name, MAX(url_checks.created_at) AS max_created_at
+                SELECT urls.id, urls.name, MAX(url_checks.created_at) 
+                AS max_created_at, url_checks.status_code
                 FROM urls
-                LEFT JOIN url_checks ON urls.id = url_checks.id
-                GROUP BY urls.id, urls.name;
+                LEFT JOIN url_checks ON urls.id = url_checks.url_id
+                GROUP BY urls.id, urls.name, url_checks.status_code
             """
             cursor.execute(query)
             columns = [desc[0] for desc in cursor.description]
@@ -64,13 +65,21 @@ def get_url_by_id(id_):
             return None
 
 
-def insert_new_check(url_id: int):
+def insert_new_check(url_id: int, status_code: int):
     insert_query = '''
-    INSERT INTO url_checks (url_id, created_at) VALUES (%s, %s);
+    INSERT INTO url_checks (url_id, status_code, created_at) 
+    VALUES (%s, %s, %s);
     '''
     with connect() as connection:
         with connection.cursor() as cursor:
-            cursor.execute(insert_query, (url_id, date.today().isoformat()))
+            cursor.execute(
+                insert_query,
+                (
+                    url_id,
+                    status_code,
+                    date.today().isoformat()
+                )
+            )
 
 
 def get_url_checks(id_):
