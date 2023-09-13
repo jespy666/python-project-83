@@ -15,11 +15,10 @@ import os
 import requests
 
 
-if "SECRET_KEY" not in os.environ:
-    load_dotenv()
+load_dotenv()
 
 ROOT = f'{os.path.dirname(__file__)}/..'
-db.execute_sql_script(f'{ROOT}/database.sql')
+#db.execute_sql_script(f'{ROOT}/database.sql')
 
 app = Flask(__name__)
 app.secret_key = os.getenv('SECRET_KEY')
