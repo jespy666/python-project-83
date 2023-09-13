@@ -4,14 +4,15 @@ import os
 
 
 def connect():
+    env_variable = os.getenv('DATABASE_URL')
+    if not env_variable:
+        raise ValueError('Not found: DATABASE_URL')
     try:
-        env_variable = os.getenv('DATABASE_URL')
         connection = psycopg2.connect(env_variable)
         connection.autocommit = True
         return connection
     except Exception as e:
         print(f'Error connecting to database: {e}')
-        return None
 
 
 def execute_sql_script(filepath):
