@@ -8,7 +8,7 @@ def normalize_url(url: str) -> str:
     return f'{parsed.scheme}://{parsed.hostname}'
 
 
-def get_html_from_url(url: str) -> str | None:
+def get_html_text(url: str) -> str | None:
     try:
         response = requests.get(url)
         response.raise_for_status()

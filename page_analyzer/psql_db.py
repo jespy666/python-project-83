@@ -1,6 +1,11 @@
 import psycopg2
 from datetime import date
 import os
+from dotenv import load_dotenv
+
+
+load_dotenv()
+ROOT = f'{os.path.dirname(__file__)}/..'
 
 
 def connect():
@@ -15,8 +20,9 @@ def connect():
         print(f'Error connecting to database: {e}')
 
 
-def execute_sql_script(filepath):
-    with open(filepath) as f:
+def execute_sql_script():
+    path = f'{ROOT}/database.sql'
+    with open(path) as f:
         script = f.read()
     with connect() as connection:
         with connection.cursor() as cursor:
@@ -47,8 +53,9 @@ def insert_new_url(url: str) -> tuple | int:
             existing_id = cursor.fetchone()
             if existing_id:
                 return existing_id[0], True
-            insert_query = '''INSERT INTO urls (name, created_at)
-             VALUES (%s, %s) RETURNING id;'''
+            insert_query = '''
+            INSERT INTO urls (name, created_at)
+            VALUES (%s, %s) RETURNING id;'''
             cursor.execute(insert_query, (url, date.today().isoformat()))
             return cursor.fetchone()[0]
 
