@@ -5,30 +5,11 @@ on:
   - pull_request
 env:
   SECRET_KEY: ${{ secrets.SECRET_KEY }}
-  DATABASE_URL: ${{ secrets.DATABASE_URL }}
-  POSTGRES_DB: github_action
-  POSTGRES_USER: postgres
-  POSTGRES_PASSWORD: '1488'
-  POSTGRES_HOST: 'localhost'
-  POSTGRES_PORT: '5432'
-  
+  DATABASE_URL: ${{ secrets.DATABASE_URL }}  
 jobs:
   build:
     runs-on: ubuntu-latest
-    services:
-      postgres:
-        image: postgres:15
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: '1488'
-          POSTGRES_DB: github_action
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5   
+     
     strategy:
       matrix:
         python-version: [3.11.4]
