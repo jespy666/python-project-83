@@ -34,4 +34,3 @@ def test_valid_url(client):
 def test_invalid_url(client):
     response = client.post('/urls', data={'url': 'wrong://url'})
     assert response.status_code == 422
-
