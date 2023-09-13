@@ -1,10 +1,8 @@
 import psycopg2
 from datetime import date
 import os
-from dotenv import load_dotenv
 
 
-load_dotenv()
 ROOT = f'{os.path.dirname(__file__)}/..'
 
 

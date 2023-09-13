@@ -1,6 +1,6 @@
 import pytest
 from page_analyzer import app
-from page_analyzer.psql_db import drop_all, execute_sql_script
+from page_analyzer.psql_db import execute_sql_script
 
 
 @pytest.fixture
@@ -11,7 +11,7 @@ def client():
             execute_sql_script()
         yield client
     with app.app_context():
-        drop_all()
+        execute_sql_script()
 
 
 def test_home_page(client):
@@ -24,6 +24,7 @@ def test_home_page(client):
 def test_valid_url(client):
     response = client.post('/urls', data={'url': 'https://ru.hexlet.io/'})
     assert response.status_code == 302
+    assert '/urls/1' in response.headers['Location']
     with client.session_transaction() as session:
         flash_messages = session['_flashes']
         assert flash_messages
