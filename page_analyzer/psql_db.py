@@ -29,6 +29,13 @@ def execute_sql_script():
             cursor.execute(script)
 
 
+def drop_all():
+    with connect() as connection:
+        query = 'DROP TABLE urls, url_checks;'
+        with connection.cursor() as cursor:
+            cursor.execute(query)
+
+
 def get_urls_from_db():
     with connect() as connection:
         with connection.cursor() as cursor:
