@@ -1,17 +1,19 @@
 import psycopg2
 from datetime import date
 import os
+from dotenv import load_dotenv
 
 
+load_dotenv()
 ROOT = f'{os.path.dirname(__file__)}/..'
+DATABASE_URL = os.getenv('DATABASE_URL')
 
 
-def connect():
-    env_variable = os.getenv('DATABASE_URL')
-    if not env_variable:
+def connect(db_url):
+    if not db_url:
         raise ValueError('Not found: DATABASE_URL')
     try:
-        connection = psycopg2.connect(env_variable)
+        connection = psycopg2.connect(db_url)
         connection.autocommit = True
         return connection
     except Exception as e:
@@ -22,13 +24,13 @@ def execute_sql_script():
     path = f'{ROOT}/database.sql'
     with open(path) as f:
         script = f.read()
-    with connect() as connection:
+    with connect(DATABASE_URL) as connection:
         with connection.cursor() as cursor:
             cursor.execute(script)
 
 
 def get_urls_from_db():
-    with connect() as connection:
+    with connect(DATABASE_URL) as connection:
         with connection.cursor() as cursor:
             query = """
             SELECT urls.id, urls.name, MAX(url_checks.created_at)
@@ -44,7 +46,7 @@ def get_urls_from_db():
 
 
 def insert_new_url(url: str) -> tuple | int:
-    with connect() as connection:
+    with connect(DATABASE_URL) as connection:
         with connection.cursor() as cursor:
             check_query = 'SELECT id FROM urls WHERE name = %s;'
             cursor.execute(check_query, (url,))
@@ -59,7 +61,7 @@ def insert_new_url(url: str) -> tuple | int:
 
 
 def get_url_by_id(id_):
-    with connect() as connection:
+    with connect(DATABASE_URL) as connection:
         with connection.cursor() as cursor:
             query = "SELECT * FROM urls WHERE id = %s;"
             cursor.execute(query, (id_,))
@@ -76,7 +78,7 @@ def insert_new_check(url_id: int, status_code: int, seo_info: dict):
     (url_id, status_code, h1, title, description, created_at)
     VALUES (%s, %s, %s, %s, %s, %s);
     """
-    with connect() as connection:
+    with connect(DATABASE_URL) as connection:
         with connection.cursor() as cursor:
             cursor.execute(
                 insert_query,
@@ -92,7 +94,7 @@ def insert_new_check(url_id: int, status_code: int, seo_info: dict):
 
 
 def get_url_checks(id_):
-    with connect() as connection:
+    with connect(DATABASE_URL) as connection:
         with connection.cursor() as cursor:
             cursor.execute("""
                     SELECT JSONB_BUILD_OBJECT(
